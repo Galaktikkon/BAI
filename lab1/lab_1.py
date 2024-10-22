@@ -16,7 +16,7 @@
 # %% [markdown] editable=true slideshow={"slide_type": ""}
 # # Regresja liniowa i logistyczna
 
-# %% [markdown]
+# %% [markdown] jp-MarkdownHeadingCollapsed=true
 # ## Wstęp
 #
 # Celem tego laboratorium będzie stworzenie modelu uczenia maszynowego do estymacji cen nieruchomości na podstawie danych o jej położeniu, ilości sypialń, roku budowy, typie budynku oraz wielu innych parametrów.
@@ -221,8 +221,8 @@ plt.show()
 
 # %% editable=true slideshow={"slide_type": ""} tags=["ex"]
 # remove outliers
-# your_code
 
+# your_code
 df = df.loc[df["GrLivArea"] < 4000, :]
 
 
@@ -269,10 +269,9 @@ plt.show()
 
 # %% editable=true slideshow={"slide_type": ""} tags=["ex"]
 # apply log transform
-# your_code
 
-df['SalePrice'] = np.log1p(df['SalePrice'])
-df['SalePrice']
+# your_code
+df["SalePrice"] = np.log1p(df["SalePrice"])
 
 
 # %% editable=true slideshow={"slide_type": ""} tags=["ex"]
@@ -441,10 +440,10 @@ replace_na(df, "SaleCondition", value="Normal")
 
 
 # %% editable=true slideshow={"slide_type": ""} tags=["ex"]
-assert df['CentralAir'].isna().sum() == 0
-assert df['EnclosedPorch'].isna().sum() == 0
-assert df['Fireplaces'].isna().sum() == 0
-assert df['SaleCondition'].isna().sum() == 0
+assert df["CentralAir"].isna().sum() == 0
+assert df["EnclosedPorch"].isna().sum() == 0
+assert df["Fireplaces"].isna().sum() == 0
+assert df["SaleCondition"].isna().sum() == 0
 
 print("Solution is correct!")
 
@@ -749,7 +748,7 @@ X_train, X_test, y_train, y_test = train_test_split(
 from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import OneHotEncoder, MinMaxScaler
+from sklearn.preprocessing import MinMaxScaler, OneHotEncoder
 
 one_hot_encoder = OneHotEncoder(
     drop="first", sparse_output=False, handle_unknown="ignore"
@@ -757,25 +756,25 @@ one_hot_encoder = OneHotEncoder(
 median_imputer = SimpleImputer(strategy="median")
 min_max_scaler = MinMaxScaler()
 
-categorical_pipeline = Pipeline([('one_hot_encoder', one_hot_encoder)])
+categorical_pipeline = Pipeline([("one_hot_encoder", one_hot_encoder)])
 
-numerical_pipeline = Pipeline([('median_imputer', median_imputer), ('min_max_scaler', min_max_scaler)])
+numerical_pipeline = Pipeline(
+    [("median_imputer", median_imputer), ("min_max_scaler", min_max_scaler)]
+)
 
 column_transformer = ColumnTransformer(
     transformers=[
-        ('categorical_pipeline', categorical_pipeline, categorical_features),
-        ('numerical_pipeline', numerical_pipeline, numerical_features)
+        ("categorical_pipeline", categorical_pipeline, categorical_features),
+        ("numerical_pipeline", numerical_pipeline, numerical_features),
     ],
-    verbose_feature_names_out=False
+    verbose_feature_names_out=False,
 )
 
 # fit and transform
-# your_code
 
+# your_code
 X_train = column_transformer.fit_transform(X_train)
 X_test = column_transformer.transform(X_test)
-
-
 
 # %% editable=true slideshow={"slide_type": ""} tags=["ex"]
 for i in range(X_train.shape[1]):
@@ -837,8 +836,8 @@ column_transformer
 # Obliczanie regresji liniowej używa pseudoodwrotności Moore'a-Penrose'a i SVD. Objaśnia to dobrze [ten tutorial](https://sthalles.github.io/svd-for-regression/).
 
 # %% editable=true slideshow={"slide_type": ""}
-from sklearn.metrics import root_mean_squared_error
 from sklearn.linear_model import LinearRegression
+from sklearn.metrics import root_mean_squared_error
 
 # all variables are in range [0, 1], so we don't need an intercept
 reg_linear = LinearRegression(fit_intercept=False)
@@ -895,7 +894,9 @@ print(f"RMSE: {rmse:.4f}, ({rmse_dl:.2f}$)")
 # Skomentuj wyniki. Czy następuje przeuczenie modelu? Oceń także sam błąd, czy subiektywnie to duża wartość, biorąc pod uwagę rozkład zmiennej docelowej (wartości i wykresy w sekcji EDA)?
 
 # %% editable=true slideshow={"slide_type": ""} tags=["ex"]
-def assess_regression_model(model, X_train, X_test, y_train, y_test) -> tuple[float, float]:
+def assess_regression_model(
+    model, X_train, X_test, y_train, y_test
+) -> tuple[float, float]:
 
     # predict for train and test
     # your_code_here
@@ -916,15 +917,17 @@ def assess_regression_model(model, X_train, X_test, y_train, y_test) -> tuple[fl
 
     # print train and test RMSE
     # your_code_here
-    print(f'train RMSE: {rmse_train:.2f}$, test RMSE: {rmse_test:.2f}$')
-    print(f'%diff: {((1 - rmse_train/rmse_test)*100):.2f}%')
+    print(f"train RMSE: {rmse_train:.2f}$, test RMSE: {rmse_test:.2f}$")
+    print(f"%diff: {((1 - rmse_train/rmse_test)*100):.2f}%")
 
     # your_code
     return rmse_train, rmse_test
 
 
 # %% editable=true slideshow={"slide_type": ""} tags=["ex"]
-rmse_train, rmse_test = assess_regression_model(reg_linear, X_train, X_test, y_train, y_test)
+rmse_train, rmse_test = assess_regression_model(
+    reg_linear, X_train, X_test, y_train, y_test
+)
 
 
 # %% editable=true slideshow={"slide_type": ""} tags=["ex"]
@@ -938,7 +941,6 @@ print("Solution is correct!")
 # // skomentuj tutaj
 #
 # Błędy nie są wysokie, ale RMSE dla danych testowych jest ~21% większe niż RMSE dla danych treningowych. Według mnie to dosyć sporo i mogło dojść do overfittingu.
-# Sam błąd jest niewielki, patrząc na wykresy, to są to małe wahania wartości.
 
 # %% [markdown] editable=true slideshow={"slide_type": ""}
 # ## Regresja regularyzowana (ridge, LASSO)
@@ -974,7 +976,7 @@ print("Solution is correct!")
 # Jako że nasz model jest regularyzowany i nie ma ryzyka problemów numerycznych, to teraz już obliczamy intercept.
 
 # %% editable=true slideshow={"slide_type": ""}
-from sklearn.linear_model import Ridge, Lasso
+from sklearn.linear_model import Lasso, Ridge
 
 reg_ridge = Ridge(random_state=0)
 reg_lasso = Lasso(random_state=0)
@@ -1080,17 +1082,19 @@ print()
 # Przetestuj modele z użyciem `assess_regression_model()`. Skomentuj wyniki. Czy udało się wyeliminować overfitting?
 
 # %% editable=true slideshow={"slide_type": ""} tags=["ex"]
-from sklearn.linear_model import RidgeCV, LassoCV
-
 # your_code
+
+from sklearn.linear_model import LassoCV, RidgeCV
 
 # RidgeCV
 reg_ridge = RidgeCV(alphas=np.linspace(start=0.1, stop=100, num=1000), cv=None)
 reg_ridge.fit(X_train, y_train)
 
 reg_ridge_alpha = reg_ridge.alpha_
-print(f'Ridge Reggresion after hyperparameter tuning:')
-ridge_train_rmse, ridge_test_rmse = assess_regression_model(reg_ridge, X_train,  X_test, y_train, y_test)
+print(f"Ridge Reggresion after hyperparameter tuning:")
+ridge_train_rmse, ridge_test_rmse = assess_regression_model(
+    reg_ridge, X_train, X_test, y_train, y_test
+)
 
 print()
 
@@ -1100,13 +1104,15 @@ reg_lasso.fit(X_train, y_train)
 
 reg_lasso_alpha = reg_lasso.alpha_
 
-print(f'Lasso Regression after hyperparameter tuning:')
-lasso_train_rmse, lasso_test_rmse = assess_regression_model(reg_lasso, X_train, X_test, y_train, y_test)
+print(f"Lasso Regression after hyperparameter tuning:")
+lasso_train_rmse, lasso_test_rmse = assess_regression_model(
+    reg_lasso, X_train, X_test, y_train, y_test
+)
 
 
 # %% editable=true slideshow={"slide_type": ""} tags=["ex"]
-print(f' best \u03B1 for ridge: {reg_ridge_alpha:.4f}')
-print(f' best \u03B1 for lasso: {reg_lasso_alpha:.4f}')
+print(f" best \u03B1 for ridge: {reg_ridge_alpha:.4f}")
+print(f" best \u03B1 for lasso: {reg_lasso_alpha:.4f}")
 
 
 # %% editable=true slideshow={"slide_type": ""} tags=["ex"]
@@ -1259,7 +1265,7 @@ df = df.replace(
 )
 
 # 'y' column separation
-y = df.pop('y')
+y = df.pop("y")
 
 # %% editable=true slideshow={"slide_type": ""} tags=["ex"]
 assert "default" not in df.columns
@@ -1276,6 +1282,8 @@ assert sorted(["primary", "secondary", "tertiary", "unknown"]) == sorted(
 assert [3, 4, 5, 6, 7, 8, 9, 10, 11, 12] == sorted(df["month"].unique())
 assert [1, 2, 3, 4, 5] == sorted(df["day_of_week"].unique())
 assert [0, 1] == sorted(df["contact"].unique())
+
+print("Solution is correct!")
 
 # %%
 # downcast replaced columns into int64\n",
@@ -1310,8 +1318,6 @@ ax.set_xlabel("Class")
 ax.set_ylabel("Frequency")
 ax.bar_label(ax.containers[0])
 
-
-
 # %% [markdown] editable=true slideshow={"slide_type": ""}
 # Jak widać, będziemy tu mieli do czynienia z problemem klasyfikacji niezbalansowanej. Na szczęście funkcja kosztu w regresji logistycznej pozwala na dodanie **wag klas (class weights)**, aby przypisać większą wagę interesującej nas klasie pozytywnej. Scikit-learn dla wartości `class_weights="balanced"` obliczy wagi odwrotnie proporcjonalne do częstości danej klasy w zbiorze.
 
@@ -1331,31 +1337,29 @@ from sklearn.preprocessing import StandardScaler
 # your_code
 
 # feature separation
-categorical_features = df.select_dtypes(include='object').columns
-numerical_features = df.select_dtypes(exclude='object').columns
+categorical_features = df.select_dtypes(include="object").columns
+numerical_features = df.select_dtypes(exclude="object").columns
 
 # data split
 X_train, X_test, y_train, y_test = train_test_split(
-    df, y, test_size=0.25, stratify=None, random_state=0
+    df, y, test_size=0.25, stratify=y, random_state=0
 )
 
 # preprocessing
-one_hot_encoder = OneHotEncoder(
-    sparse_output=False, handle_unknown="ignore"
-)
+one_hot_encoder = OneHotEncoder(sparse_output=False, handle_unknown="ignore")
 standard_scaler = StandardScaler()
 
 # pipeline creation
-categorical_pipeline = Pipeline([('one_hot_encoder', one_hot_encoder)])
-numerical_pipeline = Pipeline([('standard_scaler', standard_scaler)])
+categorical_pipeline = Pipeline([("one_hot_encoder", one_hot_encoder)])
+numerical_pipeline = Pipeline([("standard_scaler", standard_scaler)])
 
 # data transformer creation
 column_transformer = ColumnTransformer(
     transformers=[
-        ('categorical_pipeline', categorical_pipeline, categorical_features),
-        ('numerical_pipeline', numerical_pipeline, numerical_features)
+        ("categorical_pipeline", categorical_pipeline, categorical_features),
+        ("numerical_pipeline", numerical_pipeline, numerical_features),
     ],
-    verbose_feature_names_out=False
+    verbose_feature_names_out=False,
 )
 
 # data transformation
@@ -1367,10 +1371,12 @@ X_test = column_transformer.transform(X_test)
 assert X_train.shape[0] == 30877
 assert X_test.shape[0] == 10293
 
-assert X_train[:,0].min() == 0
-assert X_train[:,0].max() == 1
-assert -3 < X_train[:,-1].min() < -2
-assert 0 < X_train[:,-1].max() < 1
+assert X_train[:, 0].min() == 0
+assert X_train[:, 0].max() == 1
+assert -3 < X_train[:, -1].min() < -2
+assert 0 < X_train[:, -1].max() < 1
+
+print("Solution is correct!")
 
 # %% editable=true slideshow={"slide_type": ""} tags=["ex"]
 column_transformer
@@ -1488,20 +1494,25 @@ column_transformer
 # %%
 # your_code
 
-from sklearn.metrics import recall_score, precision_score, f1_score
+from sklearn.metrics import f1_score, precision_score, recall_score
+
 
 # helper function for precision, recall and f1 calculation + printing
-def assess_classification_model(model, X_train, X_test, y_train, y_test) -> tuple[float, float, float]:
+def assess_classification_model(
+    model, X_train, X_test, y_train, y_test
+) -> tuple[float, float, float]:
 
     y_pred = model.predict(X_test)
-
     precision = precision_score(y_test, y_pred)
     recall = recall_score(y_test, y_pred)
     f1 = f1_score(y_test, y_pred)
 
-    print(f'precison_score: {(precision*100):.2f}%, recall_score: {(recall*100):.2f}%, f1_score: {(f1*100):.2f}%')
+    print(
+        f"precison_score: {(precision*100):.2f}%, recall_score: {(recall*100):.2f}%, f1_score: {(f1*100):.2f}%"
+    )
 
     return precision, recall, f1
+
 
 def get_train_test_f1(model, X_train, X_test, y_train, y_test) -> tuple[float, float]:
 
@@ -1511,36 +1522,59 @@ def get_train_test_f1(model, X_train, X_test, y_train, y_test) -> tuple[float, f
     f1_train = f1_score(y_train, y_pred_train)
     f1_test = f1_score(y_test, y_pred_test)
 
-    print(f'f1_train: {(f1_train*100):.2f}%, f1_test: {(f1_test*100):.2f}%')
+    print(f"f1_train: {(f1_train*100):.2f}%, f1_test: {(f1_test*100):.2f}%")
 
     return f1_train, f1_test
 
 
-
 # %% editable=true slideshow={"slide_type": ""} tags=["ex"]
 from sklearn.linear_model import LogisticRegression, LogisticRegressionCV
+from sklearn.metrics import make_scorer
 
 # without regularization
-print(f'Without regularization:')
+print(f"Without regularization:")
 nol_reg_log = LogisticRegression(class_weight="balanced", penalty=None)
 nol_reg_log.fit(X_train, y_train)
-nol_precision, nol_recall, nol_f1 = assess_classification_model(nol_reg_log, X_train, X_test, y_train, y_test)
+nol_precision, nol_recall, nol_f1 = assess_classification_model(
+    nol_reg_log, X_train, X_test, y_train, y_test
+)
 
 print()
 
 # with l2 regularization
-print(f'With L2 regularization:')
-l2_reg_log = LogisticRegressionCV(Cs=100, cv=None, penalty='l2', scoring='f1', random_state=0, class_weight="balanced", n_jobs=-1)
+print(f"With L2 regularization:")
+l2_reg_log = LogisticRegressionCV(
+    Cs=100,
+    cv=None,
+    penalty="l2",
+    scoring=make_scorer(f1_score),
+    random_state=0,
+    class_weight="balanced",
+    n_jobs=-1,
+)
 l2_reg_log.fit(X_train, y_train)
-l2_precision, l2_recall, l2_f1 = assess_classification_model(l2_reg_log, X_train, X_test, y_train, y_test)
+l2_precision, l2_recall, l2_f1 = assess_classification_model(
+    l2_reg_log, X_train, X_test, y_train, y_test
+)
 
 print()
 
 # with l1 regularization
-print(f'With L1 regularization:')
-l1_reg_log = LogisticRegressionCV(Cs=100, cv=None, penalty='l1', scoring='f1', random_state=0, class_weight="balanced", n_jobs=-1, solver='saga')
+print(f"With L1 regularization:")
+l1_reg_log = LogisticRegressionCV(
+    Cs=100,
+    cv=None,
+    penalty="l1",
+    scoring=make_scorer(f1_score),
+    random_state=0,
+    class_weight="balanced",
+    n_jobs=-1,
+    solver="saga",
+)
 l1_reg_log.fit(X_train, y_train)
-l1_precision, l1_recall, l1_f1 = assess_classification_model(l1_reg_log, X_train, X_test, y_train, y_test)
+l1_precision, l1_recall, l1_f1 = assess_classification_model(
+    l1_reg_log, X_train, X_test, y_train, y_test
+)
 
 
 # %% editable=true slideshow={"slide_type": ""} tags=["ex"]
@@ -1556,11 +1590,13 @@ assert 0.26 < l2_precision < 0.27
 assert 0.66 < l2_recall < 0.67
 assert 0.37 < l2_f1 < 0.38
 
+print("Solution is correct!")
+
 # %% editable=true slideshow={"slide_type": ""} tags=["ex"]
 # your_code
 
 # comparing f1_train and f1_test scores
-print(f'f1_train and f1_test scores comparison')
+print(f"no_reg_log f1_train and f1_test scores comparison:")
 f1_train, f1_test = get_train_test_f1(nol_reg_log, X_train, X_test, y_train, y_test)
 
 
@@ -1568,12 +1604,24 @@ f1_train, f1_test = get_train_test_f1(nol_reg_log, X_train, X_test, y_train, y_t
 assert 0.38 < f1_train < 0.39
 assert 0.37 < f1_test < 0.38
 
+print("Solution is correct!")
+
 # %% [markdown] editable=true slideshow={"slide_type": ""} tags=["ex"]
 # // skomentuj tutaj
 #
 # Moim zdaniem ważniejsza w naszym problemie jest precyzja. Opierając się na założeniu, że chcemy reklamę naszych usług bankowych kierować do możliwie tylko tych osób, które tę lokatę założą, to większą rolę odegra precyzja, która powie nam jak wiele z osób, które uznaliśmy za potencjalnych klientów rzeczywiście będzie chętnych na przekazanie nam ich pięniędzy. Czułość byłaby dobrym wyznacznikiem, gdyby nietrafione reklamy nie miały aż takiego znaczenia, a nasz biznesplan opierałby się np. na ["polowaniu na wieloryby"](https://www.appier.com/en/blog/high-value-user-acquisition-gaming-apps) i koszt niewykrycia wieloryba miałby duże konsekwencje.
 #
-#
+# W celu zmiany stosunku metryk (czułość, precyzja, itd.) możemy zmienić `threshold` klasyfikacji. Z tego co wyczytałem `threshold` dla regresji logistycznej jest domyślnie ustawiony na 0.5. Zmieniając go na np. 0.7 zmienimy stosunki TP, TN, FP, FN, bo niektóre predykcje, które były dotychczas akceptowane teraz już nie będą (lub na odwrót, ale jak zmniejszymy `threshold`).
+
+# %%
+y_pred_new_threshold = (nol_reg_log.predict_proba(X_test)[:, 1] >= 0.7).astype(int)
+precision = precision_score(y_test, y_pred_new_threshold)
+recall = recall_score(y_test, y_pred_new_threshold)
+f1 = f1_score(y_test, y_pred_new_threshold)
+print(f"nol_reg_log metrics after changing threshold:")
+print(
+    f"precison_score: {(precision*100):.2f}%, recall_score: {(recall*100):.2f}%, f1_score: {(f1*100):.2f}%"
+)
 
 # %% [markdown] editable=true slideshow={"slide_type": ""} tags=["ex"]
 # ### Zadanie 11 (2.0 punkty)
@@ -1589,29 +1637,36 @@ assert 0.37 < f1_test < 0.38
 
 # %% editable=true slideshow={"slide_type": ""} tags=["ex"]
 # your_code
-
 from sklearn.preprocessing import PolynomialFeatures
 
+categorical_features = df.select_dtypes(include="object").columns
+numerical_features = df.select_dtypes(exclude="object").columns
+
 X_train, X_test, y_train, y_test = train_test_split(
-    df, y, test_size=0.25, stratify=None, random_state=0
+    df, y, test_size=0.25, stratify=y, random_state=0
 )
 
-polynomial_features = PolynomialFeatures(degree=2,include_bias=False)
+polynomial_features = PolynomialFeatures(
+    degree=2, include_bias=False, interaction_only=False
+)
 
-polynomial_pipeline = Pipeline([('polynomial_features', polynomial_features), ('standard_scaler', standard_scaler)])
+numerical_pipeline = Pipeline(
+    [("polynomial_features", polynomial_features), ("standard_scaler", standard_scaler)]
+)
 
 column_transformer = ColumnTransformer(
     transformers=[
-        ('categorical_pipeline', categorical_pipeline, categorical_features),
-        ('polynomial_pipeline', polynomial_pipeline, numerical_features),
+        ("categorical_pipeline", categorical_pipeline, categorical_features),
+        ("polynomial_pipeline", numerical_pipeline, numerical_features),
     ],
-    verbose_feature_names_out=False
+    verbose_feature_names_out=False,
 )
 
 X_train = column_transformer.fit_transform(X_train)
 X_test = column_transformer.transform(X_test)
 
-poly_reg_log = LogisticRegression(class_weight="balanced", penalty=None)
+# max_iter set to 10 * default value (=100) = 1_000 as the algorithm did not converge for the default max_iter value
+poly_reg_log = LogisticRegression(class_weight="balanced", penalty=None, max_iter=1_000)
 poly_reg_log.fit(X_train, y_train)
 
 f1_train, f1_test = get_train_test_f1(poly_reg_log, X_train, X_test, y_train, y_test)
@@ -1621,10 +1676,12 @@ f1_train, f1_test = get_train_test_f1(poly_reg_log, X_train, X_test, y_train, y_
 assert 0.44 < f1_train < 0.45
 assert 0.43 < f1_test < 0.44
 
+print("Solution is correct!")
+
 # %% [markdown] editable=true slideshow={"slide_type": ""} tags=["ex"]
 # // skomentuj tutaj
 #
-#
+# Moim zdaniem regularyzacja nie zawsze ma sens, a w tym przypadku na pewno jest to tylko strata czasu. Patrząc na poprzednie zadanie, trenowanie modeli L1 i L2 zajęło o wiele więcej cennego czasu niż wytrenowanie modelu bez regularyzacji, a wyniki były niemalże identyczne. W tym zadaniu podeszliśmy do preprocessingu inaczej i osiągnęliśmy lepszy model niż w przypadku dodatkowego obciążenia naszego sprzętu regularyzacją.
 
 # %% [markdown] editable=true slideshow={"slide_type": ""} tags=["ex"]
 # ## Zadanie 12 dodatkowe (3 punkty)
