@@ -52,6 +52,7 @@
 import json
 import os
 
+import numpy as np
 import pandas as pd
 from scipy.io import arff
 
@@ -395,7 +396,7 @@ assert 0.8 < forest_roc < 0.95
 # %% [markdown] editable=true pycharm={"name": "#%% md\n"} slideshow={"slide_type": ""} tags=["ex"]
 # // skomentuj tutaj
 #
-# Wyniki są porównywalne do tych, które otrzymaliśmy poprzednio.
+# Wyniki są porównywalne do tych, które otrzymaliśmy poprzednio. AUROC można interpretować w ten sposób, że jest to prawdopodobieństwo, na to że spośród losowo wybranego **TP** i losowo wybranego **TN**, model zaklasyfikuje wyżej **TP** niż **TN**. Ta metryka nie hierarchizuje klas, przez co dobrze radzi sobie, w przypadku ich niezbalansowania. Z tego powodu na zbiorze zrównoważonym, gdzie też nie uznaje jednej klasy za ważniejszej, radzi sobie podobnie.
 #
 
 # %% [markdown] editable=true pycharm={"name": "#%% md\n"} slideshow={"slide_type": ""}
@@ -459,6 +460,8 @@ print("Solution is correct!")
 
 # %% [markdown] editable=true pycharm={"name": "#%% md\n"} slideshow={"slide_type": ""} tags=["ex"]
 # // skomentuj tutaj
+#
+# Samo dostrajanie w moim przypadku nie zajęło zbyt dużo czasu - testowałem na dwóch maszynach i wyszło między 3-7 minut, więc akceptowalnie. Wynik się poprawił, więc jak najbardziej było warto.
 
 # %% [markdown] editable=true pycharm={"name": "#%% md\n"} slideshow={"slide_type": ""}
 # W praktycznych zastosowaniach data scientist wedle własnego uznana, doświadczenia, dostępnego czasu i zasobów wybiera, czy dostrajać hiperparametry i w jak szerokim zakresie. Dla Random Forest na szczęście często może nie być znaczącej potrzeby, i za to go lubimy :)
@@ -518,6 +521,9 @@ print("Solution is correct!")
 
 # %% [markdown] editable=true pycharm={"name": "#%% md\n"} slideshow={"slide_type": ""} tags=["ex"]
 # // skomentuj tutaj
+#
+# LGBM osiągnał znakomity wynik, a ponadto, porównując z innymi klasyfikatorami, okazał się niesamowicie szybki, co tym bardziej działa na plus.
+#
 
 # %% [markdown] editable=true pycharm={"name": "#%% md\n"} slideshow={"slide_type": ""}
 # Boosting dzięki uczeniu na poprzednich drzewach redukuje nie tylko wariancję, ale też bias w błędzie, dzięki czemu może w wielu przypadkach osiągnąć lepsze rezultaty od lasu losowego. Do tego dzięki znakomitej implementacji LightGBM jest szybszy.
@@ -625,6 +631,9 @@ assert 0.9 <= auroc <= 0.99
 
 # %% [markdown] editable=true pycharm={"name": "#%% md\n"} slideshow={"slide_type": ""} tags=["ex"]
 # // skomentuj tutaj
+#
+# To czy jest to pożądane zjawisko, to zależy od naszej taktyki. Załóżmy, że bardziej nas interesuje precyzja i chcemy być maksylmanie skuteczni w naszych przewidywaniach bankructwa, bo fałszywy alarm może prowadzić np. do zamknięcia dobrze prosperującej firmy albo drastycznej restrukturyzacji. W takim wypadku, dostrojenie hiper-parametrów miało duże znaczenie. Precyzja znacznie się polepszyła, co jest dla nas bardzo korzystne. Warto zwrócić uwagę na to, że AUROC w obu przypadkach jest dosyć podobny (~0.94). Podczas wykonywania tego labolatorium napotkałem masę różnych artykułów pt. "[Why you should not use AUROC](https://www.kaggle.com/code/lct14558/imbalanced-data-why-you-should-not-use-roc-curve)". Autorzy słusznie zwracali uwagę na potrzebę oceny modelu również innymi metrykami (często przewijał się Precision-Recall Curve), co w tym wypadku ma swoje odzwierciedlenie, jako że dla dwóch bliskich wyników AUROC, inne metryki, z perspektywy naszego biznesplanu - ważniejsze, mocno się różniły.
+#
 
 # %% [markdown] editable=true pycharm={"name": "#%% md\n"} slideshow={"slide_type": ""}
 # **Boosting - podsumowanie**
@@ -708,6 +717,9 @@ plot_feature_importances(
 
 # %% [markdown] editable=true slideshow={"slide_type": ""} tags=["ex"]
 # // skomentuj tutaj
+#
+# W trzech różnych metodach zostały wyróżnione całkiem "logiczne" cechy: takie jak `sales(n)/sales(n-1)` oraz `profit on operating activites/financial expenses`. To ważne cechy, których odpowiednie stosunki (tzn. $\geq 1$) świadczą o dobrej kondycji firmy. Pierwsza kładzie nacisk na zdolność do rozwoju, a druga na wydajność finansową firmy (potrzebną np. w przypadku długów). Myslę, że wybór tych cech jak najbardziej ma sens.
+#
 
 # %% [markdown]
 # ### Dla zainteresowanych
@@ -756,7 +768,7 @@ random_forest.fit(X_reb, y_reb)
 
 get_auroc_score(random_forest, X_test, y_test)
 get_classification_report(
-    random_forest, X_reb, y_test, "Classification report for Random forest:"
+    random_forest, X_test, y_test, "Classification report for Random forest:"
 )
 
 print(f"LGBM:")
@@ -774,7 +786,7 @@ print(f"Filter Methods\n")
 filter_method = SelectPercentile(score_func=mutual_info_classif, percentile=80)
 
 X_train_selected = filter_method.fit_transform(X_reb, y_reb)
-X_test_selected = filter_method.fit_transform(X_test, y_test)
+X_test_selected = filter_method.transform(X_test)
 
 print(f"Random forest:")
 
@@ -875,3 +887,6 @@ LGBM_RFE.fit(X_reb, y_reb)
 
 get_auroc_score(LGBM_RFE, X_test, y_test)
 get_classification_report(LGBM_RFE, X_test, y_test, "Classification report for LGBM:")
+
+# %% [markdown]
+# Zgodnie z założeniami metody filter okazały się najsłabsze i tylko pogorszyły model. Metody Wrapper najbardziej usprawniły model, a metody embedded były gdzieś pośrodku. W przypadku innych metryk: precyzja i pokrycie, selekcja cech na ogół negatywnie na nie wpłynęła, bądź lekko polepszyła.
