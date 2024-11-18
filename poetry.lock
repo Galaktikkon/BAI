@@ -3240,30 +3240,6 @@ doc = ["sphinx", "sphinx_rtd_theme"]
 test = ["pytest", "ruff"]
 
 [[package]]
-name = "torch"
-version = "2.5.1+cu118"
-description = "Tensors and Dynamic neural networks in Python with strong GPU acceleration"
-optional = false
-python-versions = "*"
-files = []
-
-[[package]]
-name = "torchaudio"
-version = "2.5.1+cu118"
-description = "An audio package for PyTorch"
-optional = false
-python-versions = "*"
-files = []
-
-[[package]]
-name = "torchvision"
-version = "0.20.1+cu118"
-description = "image and video datasets and models for torch deep learning"
-optional = false
-python-versions = "*"
-files = []
-
-[[package]]
 name = "tornado"
 version = "6.4.1"
 description = "Tornado is a Python web framework and asynchronous networking library, originally developed at FriendFeed."
@@ -3414,4 +3390,4 @@ test = ["websockets"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "0e17e10364845ae3971801e6291a11cfa9999c90fe30acb41762fc8e4d8bc96a"
+content-hash = "9185f87770f619464704dbb612579e29e67c758fe0b08a042e33163afeaddf15"
