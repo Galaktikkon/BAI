@@ -23,9 +23,7 @@ jupyter-server = "^2.14.2"
 nbconvert = "^7.16.4"
 imblearn = "^0.0"
 lightgbm = "^4.5.0"
-torch = "^2.5.1+cu118"
-torchaudio = "^2.5.1+cu118"
-torchvision = "^0.20.1+cu118"
+optuna = "^4.1.0"
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.10.0"
