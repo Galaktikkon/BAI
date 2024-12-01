@@ -6,6 +6,10 @@ authors = ["Aleksander Smywinski-Pohl <apohllo@o2.pl>"]
 readme = "README.md"
 package-mode = false
 
+[[tool.poetry.source]]
+name = "pytorch"
+url = "https://download.pytorch.org/whl/cu118"
+
 [tool.poetry.dependencies]
 python = "^3.11"
 jupyterlab = "^4.2.5"
@@ -24,6 +28,10 @@ nbconvert = "^7.16.4"
 imblearn = "^0.0"
 lightgbm = "^4.5.0"
 optuna = "^4.1.0"
+opencv-python = "^4.10.0.84"
+torch = "2.5.1+cu118"
+torchvision = "2.5.1+cu118"
+torchaudio = "0.20.1+cu118"
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.10.0"
