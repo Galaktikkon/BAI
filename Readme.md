@@ -2,9 +2,9 @@
 
 This repository contains my solutions to the laboratories from the FAI course. 📚💻
 
-The labs are in **Polish**, so be aware that the instructions and code comments will be in 🇵🇱.
+The labs are in 🇵🇱.
 
-However, feel free to use them as _inspiration_.
+However, feel free to use them as an _inspiration_.
 
 ---
 
