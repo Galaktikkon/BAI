@@ -2,7 +2,7 @@
 
 This repository contains my solutions to the laboratories from the FAI course. 📚💻
 
-The labs are in  🇵🇱.
+The labs are in $$\text{ }$$ 🇵🇱.
 
 However, feel free to use them as an _inspiration_.
 
