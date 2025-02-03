@@ -1,4 +1,4 @@
-# Solutions to Fundamentals of Artificial Intelligence course Labs
+# Solutions to Fundamentals of Artificial Intelligence course labs
 
 This repository contains my solutions to the laboratories from the FAI course. 📚💻
 
