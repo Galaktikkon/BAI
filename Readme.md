@@ -1,56 +1,25 @@
-# Spis treści
+# Solutions to Basics of Artificial Intelligence course Labs
 
-* [Regresja liniowa i logistyczna](lab1/Readme.md)
-* [Lasy decyzyjne i boosting](lab2/Readme.md)
-* [Sieci neuronowe](lab3/Readme.md)
-* [Detekcja obiektów](lab4/Readme.md)
-* [Przetwarzanie języka naturalnego](lab5/Readme.md)
-* [Algorytmy rekomendacyjne](lab6/Readme.md)
-* [Podejmowanie decyzji](lab7/Readme.md)
+This repository contains my solutions to the laboratories from the BAI (Artificial Intelligence) course. 📚💻
 
-# Zasady zaliczania laboratoriów
+The labs are in **Polish**, so be aware that the instructions and code comments will be in 🇵🇱.
 
-Zasady zaliczania laboratoriów dostępne są w dokumencie przypisanym do kursu na Teamsach.
+However, feel free to use them as _inspiration_.
 
-# Prowadzący
+---
 
-* dr inż. Aleksander Smywiński-Pohl
-* dr inż. Mateusz Jarosz
-* mgr inż. Jakub Adamczyk
-* mgr inż. Mykola Haltiuk
+# Table of Contents
 
-# Setup środowiska wirtualnego 
+* [Linear and Logistic Regression](lab1/Readme.md)  [(📓)](lab1/lab_1.ipynb)
+* [Decision Trees and Boosting](lab2/Readme.md)  [(📓)](lab2/lab_2.ipynb)
+* [Neural Networks](lab3/Readme.md)  [(📓)](lab3/lab_3.ipynb)
+* [Object Detection](lab4/Readme.md)  [(📓)](lab4/lab_4.ipynb)
+* [Natural Language Processing](lab5/Readme.md)  [(📓)](lab5/lab_5.ipynb)
+* [Recommendation Algorithms](lab6/Readme.md)  [(📓)](lab6/lab_6.ipynb)
+* [Decision Making](lab7/Readme.md)  [(📓)](lab7/lab_7.ipynb)
 
-#### Instalacja poetry
+---
 
-```sh
-curl -sSL https://install.python-poetry.org | python3 -
-```
+# Important
 
-#### Stworzenie środowiska wirutalnego oraz pobranie zależności
-
-```sh
-poetry install
-```
-
-#### Aktywacja środowiska wirtualnego
-
-```sh
-poetry shell
-```
-
-#### Wyjście ze środowiska wirtualnego 
-
-```sh
-exit
-```
-
-#### Usuwanie środowisk wirtualnych
-
-```sh
-poetry env list
-```
-
-```sh
-poetry env remove <environment-name>
-```
+If you find this repository useful or inspiring, **leave it a star** ⭐!
