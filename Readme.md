@@ -2,9 +2,9 @@
 
 This repository contains my solutions to the laboratories from the FAI course. 📚💻
 
-The labs are in **Polish**.
+The labs are in **Polish** :poland:
 
-However, feel free to use them as an _inspiration_.
+Feel free to use them as an _inspiration_ and, if you do,  **leave it a star** ⭐!
 
 ---
 
@@ -19,7 +19,3 @@ However, feel free to use them as an _inspiration_.
 * [Recommendation Algorithms](lab7/Readme.md)  [(📝)](lab7/lab_7.ipynb)
 
 ---
-
-# Important
-
-If you find this repository useful or inspiring, **leave it a star** ⭐!
