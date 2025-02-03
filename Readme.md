@@ -1,6 +1,6 @@
-# Solutions to Basics of Artificial Intelligence course Labs
+# Solutions to Fundamentals of Artificial Intelligence course Labs
 
-This repository contains my solutions to the laboratories from the BAI (Artificial Intelligence) course. 📚💻
+This repository contains my solutions to the laboratories from the FAI course. 📚💻
 
 The labs are in **Polish**, so be aware that the instructions and code comments will be in 🇵🇱.
 
